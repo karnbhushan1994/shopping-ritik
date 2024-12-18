@@ -1,39 +1,27 @@
-const mongoose = require('mongoose'); // Mongoose for MongoDB schema definition and interaction
-const bcrypt = require('bcryptjs'); // bcryptjs for hashing passwords securely
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
-});
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['User', 'Admin', 'SuperAdmin'], default: 'User' },
+    addresses: [
+        {
+            street: String,
+            city: String,
+            state: String,
+            postalCode: String,
+            country: String,
+        },
+    ],
+}, { timestamps: true });
 
-// Pre-save middleware to hash the password before saving it to the database
-userSchema.pre('save', async function (next) {  // Fixed "pre" instead of "prev"
-    // Check if the password field has been modified
-    if (!this.isModified('password')) return next(); // Skip hashing if password hasn't changed
-    
-    // Generate a salt for hashing the password
-    const salt = await bcrypt.genSalt(10); // 10 rounds of salt complexity
-    
-    // Hash the password using bcrypt and the generated salt
-    this.password = await bcrypt.hash(this.password, salt); // Replace the plain text password with the hash
-
-    // Continue to the next middleware or save the user document
-    next();
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 module.exports = mongoose.model('User', userSchema);
