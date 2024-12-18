@@ -1,0 +1,25 @@
+PUT /api/profile/update
+Authorization: Bearer <JWT_TOKEN>
+Body: {
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+}
+
+
+PUT /api/profile/addresses
+Authorization: Bearer <JWT_TOKEN>
+Body: {
+    "addresses": [
+        {
+            "street": "123 Main St",
+            "city": "New York",
+            "state": "NY",
+            "postalCode": "10001",
+            "country": "USA"
+        }
+    ]
+}
+
+
+GET /api/admin/dashboard
+Authorization: Bearer <JWT_TOKEN> (Role: Admin or SuperAdmin)
