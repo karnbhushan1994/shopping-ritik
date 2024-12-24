@@ -4,14 +4,14 @@ const bcrypt = require('bcryptjs');    // Import bcrypt for password comparison 
 
 // Register User
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password,role} = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        const user = await User.create({ name, email, password });
+        const user = await User.create({ name, email, password ,role});
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '30d',
         });

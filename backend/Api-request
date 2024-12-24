@@ -1,25 +1,198 @@
-PUT /api/profile/update
-Authorization: Bearer <JWT_TOKEN>
-Body: {
-    "name": "John Doe",
-    "email": "john.doe@example.com"
-}
+Here’s the API for managing categories in your application, assuming you are using **Express.js** for routing:
 
+### **Base URL**
+```plaintext
+http://your-domain/api/categories
+```
 
-PUT /api/profile/addresses
-Authorization: Bearer <JWT_TOKEN>
-Body: {
-    "addresses": [
+### **Endpoints**
+
+---
+
+#### **1. Get All Categories**
+Fetches all categories with pagination and sorting.
+
+**Endpoint:**
+```http
+GET /api/categories
+```
+
+**Query Parameters:**
+| Parameter | Type    | Description                       | Default   |
+|-----------|---------|-----------------------------------|-----------|
+| `page`    | Integer | Page number for pagination        | `1`       |
+| `limit`   | Integer | Number of items per page          | `10`      |
+| `sortBy`  | String  | Field to sort by                 | `createdAt` |
+| `order`   | String  | Sort order (`asc` or `desc`)      | `asc`     |
+
+**Example:**
+```http
+GET /api/categories?page=2&limit=5&sortBy=name&order=desc
+```
+
+**Response:**
+```json
+[
+    {
+        "_id": "64f7b1d0e1234567890abcdef",
+        "name": "Electronics",
+        "description": "Category for electronic items",
+        "parentCategory": null
+    },
+    {
+        "_id": "64f7b1d0e1234567890abcdea",
+        "name": "Books",
+        "description": "Books and literature",
+        "parentCategory": null
+    }
+]
+```
+
+---
+
+#### **2. Get Category by ID**
+Fetches a single category by its ID.
+
+**Endpoint:**
+```http
+GET /api/categories/:id
+```
+
+**Path Parameters:**
+| Parameter | Type   | Description          |
+|-----------|--------|----------------------|
+| `id`      | String | The ID of the category |
+
+**Example:**
+```http
+GET /api/categories/64f7b1d0e1234567890abcdef
+```
+
+**Response:**
+```json
+{
+    "_id": "64f7b1d0e1234567890abcdef",
+    "name": "Electronics",
+    "description": "Category for electronic items",
+    "parentCategory": null,
+    "subcategories": [
         {
-            "street": "123 Main St",
-            "city": "New York",
-            "state": "NY",
-            "postalCode": "10001",
-            "country": "USA"
+            "_id": "64f7b1d0e1234567890abcdff",
+            "name": "Mobile Phones",
+            "description": "Category for smartphones"
         }
     ]
 }
+```
 
+---
 
-GET /api/admin/dashboard
-Authorization: Bearer <JWT_TOKEN> (Role: Admin or SuperAdmin)
+#### **3. Create a Category**
+Creates a new category.
+
+**Endpoint:**
+```http
+POST /api/categories
+```
+
+**Request Body:**
+| Field          | Type   | Required | Description                |
+|----------------|--------|----------|----------------------------|
+| `name`         | String | Yes      | Name of the category       |
+| `description`  | String | No       | Description of the category|
+| `parentCategory`| String | No       | Parent category ID (optional)|
+
+**Example:**
+```json
+{
+    "name": "Furniture",
+    "description": "Category for furniture",
+    "parentCategory": "64f7b1d0e1234567890abcdea"
+}
+```
+
+**Response:**
+```json
+{
+    "_id": "64f7b1d0e1234567890abcdec",
+    "name": "Furniture",
+    "description": "Category for furniture",
+    "parentCategory": "64f7b1d0e1234567890abcdea"
+}
+```
+
+---
+
+#### **4. Update a Category**
+Updates an existing category by its ID.
+
+**Endpoint:**
+```http
+PUT /api/categories/:id
+```
+
+**Path Parameters:**
+| Parameter | Type   | Description          |
+|-----------|--------|----------------------|
+| `id`      | String | The ID of the category |
+
+**Request Body:**
+| Field          | Type   | Required | Description                |
+|----------------|--------|----------|----------------------------|
+| `name`         | String | No       | Name of the category       |
+| `description`  | String | No       | Description of the category|
+| `parentCategory`| String | No       | Parent category ID (optional)|
+
+**Example:**
+```json
+{
+    "name": "Home Furniture",
+    "description": "Updated description for furniture"
+}
+```
+
+**Response:**
+```json
+{
+    "_id": "64f7b1d0e1234567890abcdec",
+    "name": "Home Furniture",
+    "description": "Updated description for furniture",
+    "parentCategory": "64f7b1d0e1234567890abcdea"
+}
+```
+
+---
+
+#### **5. Delete a Category**
+Deletes a category by its ID.
+
+**Endpoint:**
+```http
+DELETE /api/categories/:id
+```
+
+**Path Parameters:**
+| Parameter | Type   | Description          |
+|-----------|--------|----------------------|
+| `id`      | String | The ID of the category |
+
+**Example:**
+```http
+DELETE /api/categories/64f7b1d0e1234567890abcdef
+```
+
+**Response:**
+```json
+{
+    "message": "Category removed successfully"
+}
+```
+
+---
+
+### **Implementation Notes**
+- Make sure all endpoints are protected with appropriate authentication/authorization middleware if required.
+- Input validation and error handling are already part of the controllers.
+- Replace `your-domain` with the actual domain or localhost for development.
+
+Let me know if you need assistance implementing or testing these endpoints!
