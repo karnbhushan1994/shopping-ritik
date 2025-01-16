@@ -9,6 +9,7 @@ const categoryRoutes = require('./src/routes/categoryRoutes');
 const { errorHandler } = require('./src/middlewares/errorMiddleware');
 const productRoutes =  require('./src/routes/productRoutes');
 const wishlistRoutes = require('./src/routes/wishlistRoutes');
+const cartRoutes = require('./src/routes/cartRoutes');
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/cart', cartRoutes);
 
 
 const PORT = process.env.PORT || 5000;
